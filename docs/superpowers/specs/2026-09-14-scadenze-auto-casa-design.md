@@ -451,3 +451,25 @@ input facoltativo per filtrare per voce, azione di notifica scelta dall'utente c
 - Caldaia, DPR 74/2013: [Bosetti & Gatti – dPR 74/2013](https://www.bosettiegatti.eu/info/norme/statali/2013_0074.htm)
 - Config subentries: [HA Developer Docs – Config entries](https://developers.home-assistant.io/docs/config_entries_index/)
 - Dispositivi e subentry, `via_device_id`: [HA core 2026.8.0 – device_registry.py](https://github.com/home-assistant/core/blob/2026.8.0/homeassistant/helpers/device_registry.py)
+
+## 15. Correzioni emerse scrivendo il piano (2026-09-14)
+
+Queste voci prevalgono sulle sezioni indicate.
+
+1. **§6, §8.0 — etichette.** Il nome predefinito di una scadenza, il `model` del dispositivo della scadenza e
+   il `model` del dispositivo della voce usano **etichette italiane fisse** (`Modello.etichetta`,
+   `ETICHETTE_TIPO_VOCE`). Il registro dispositivi non traduce `model` e l'integrazione è pensata per l'Italia.
+   Le traduzioni `it`/`en` restano per form, selettori, nomi delle entità e riparazioni.
+2. **§6 — assicurazione.** Il campo intervallo è un numero di mesi (predefinito 12, ammessi 1–240), non una scelta fra 6 e 12.
+3. **§8.1 — entity_id.** Home Assistant genera gli entity_id dai nomi **inglesi** delle entità: gli esempi reali
+   sono `sensor.panda_revisione`, `sensor.panda_revisione_days_left`, `binary_sensor.panda_revisione_due_soon`,
+   `button.panda_revisione_renewed`. I test cercano le entità per `unique_id`, non per entity_id.
+4. **§11 — codici di errore dei form scadenza:** `campo_obbligatorio`, `data_non_valida`, `data_futura`,
+   `intervallo_non_valido`, `scadenza_prima_della_nascita` (per i documenti, al posto di `nascita_dopo_emissione`).
+   Opzioni: `servizio_non_trovato`, `preavvisi_non_validi`. Nuova voce: `campo_obbligatorio`, `data_futura`.
+5. **§4.2 — preavvisi nel form.** Si inseriscono come testo separato da virgole (`30, 7, 1`) e si salvano come lista di interi.
+6. **§12 — ambiente dei test.** `tests/logica/` contiene i test dei moduli puri e gira con il solo `pytest`, anche su
+   Windows. `tests/ha/` usa `pytest-homeassistant-custom-component==0.13.365` (Home Assistant 2026.9.2, Python ≥ 3.14.2)
+   e richiede Linux (CI o WSL).
+7. **§10.1 — testi dei promemoria.** Oltre agli esempi: «Scade domani (gg/mm/aaaa).» quando manca un giorno;
+   «Limite di N km raggiunto.» per i km superati.
