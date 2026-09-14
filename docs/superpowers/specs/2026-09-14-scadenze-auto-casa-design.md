@@ -473,3 +473,13 @@ Queste voci prevalgono sulle sezioni indicate.
    e richiede Linux (CI o WSL).
 7. **§10.1 — testi dei promemoria.** Oltre agli esempi: «Scade domani (gg/mm/aaaa).» quando manca un giorno;
    «Limite di N km raggiunto.» per i km superati.
+
+## 16. Correzioni emerse durante l'implementazione (2026-09-14)
+
+1. **§13 — repository.** Il repository reale è `iAlias/scadenze-auto-casa-salute` (privato): `manifest.json`,
+   README e blueprint puntano a questo indirizzo.
+2. **Ordine dei moduli.** Home Assistant carica la piattaforma `config_flow` durante il setup di ogni config entry:
+   con `config_flow: true` nel manifest, `config_flow.py` deve esistere prima di qualunque test di setup.
+3. **§12 — ambiente.** Su Windows i test con Home Assistant non si possono eseguire: `homeassistant.runner` importa
+   `fcntl` e, su questa macchina, il controllo delle applicazioni blocca la DLL di `bluetooth_data_tools`.
+   I test di `tests/ha` si verificano solo in CI (GitHub Actions, Ubuntu); `tests/logica` gira anche in locale.

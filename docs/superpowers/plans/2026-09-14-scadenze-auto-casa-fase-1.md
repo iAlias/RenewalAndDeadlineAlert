@@ -5261,3 +5261,18 @@ git commit -m "feat: blueprint, README, licenza e CI"
 - [ ] **Step 7: Verifica in CI**
 
 Quando il repository viene pubblicato su GitHub (decisione dell'utente), controllare che i tre job di `Validate` (hassfest, hacs, test) siano verdi. Se hassfest segnala chiavi di traduzione mancanti o in eccesso, correggere `strings.json` e le due traduzioni insieme e rieseguire `pytest tests/logica/test_traduzioni.py -q`.
+
+---
+
+## Note di esecuzione (2026-09-14)
+
+- Lavoro svolto nel worktree `.claude/worktrees/fase-1`, branch locale `worktree-fase-1`, pubblicato come `fase-1` su
+  `https://github.com/iAlias/scadenze-auto-casa-salute` (privato).
+- Task 1–5 verificati in locale (Windows, `.venv-logica`): 131 test verdi.
+- I test HA non girano su Windows (`fcntl` e DLL bloccate): i task 6–12 sono verificati in CI.
+- Deviazioni dall'ordine del piano:
+  - il job `test` di `.github/workflows/validate.yml` è stato aggiunto dopo il task 6; hassfest e HACS col task 12;
+  - il task 11 (`config_flow.py` e traduzioni) è stato committato prima del task 10, perché il setup delle entry
+    richiede la piattaforma `config_flow` (spec §16.2);
+  - `.gitignore` include anche `.claude/`, dove vivono i worktree;
+  - `tests/ha/common.py::configura` riporta stato e motivo della entry quando il setup fallisce.
