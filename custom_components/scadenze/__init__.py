@@ -18,7 +18,7 @@ from homeassistant.helpers.event import (
 from .const import DOMAIN, ETICHETTE_TIPO_VOCE
 from .coordinator import ScadenzeCoordinator
 
-PLATFORMS: list[Platform] = [Platform.BINARY_SENSOR, Platform.SENSOR]
+PLATFORMS: list[Platform] = [Platform.BINARY_SENSOR, Platform.BUTTON, Platform.SENSOR]
 
 type Firma = tuple[frozenset[tuple[str, str]], dict[str, Any], dict[str, Any]]
 
