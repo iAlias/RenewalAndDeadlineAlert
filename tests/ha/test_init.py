@@ -26,7 +26,7 @@ async def test_setup_crea_il_dispositivo_della_voce(
     await configura(hass, entry)
 
     assert entry.state is ConfigEntryState.LOADED
-    dispositivo = device_registry.async_get_device(identifiers={(DOMAIN, entry.entry_id)})
+    dispositivo = device_registry.async_get_device_by_identifier((DOMAIN, entry.entry_id), entry.entry_id)
     assert dispositivo is not None
     assert (dispositivo.name, dispositivo.model) == ("Panda", "Veicolo")
     assert entry.runtime_data.device_id_voce == dispositivo.id

@@ -68,8 +68,8 @@ async def test_un_dispositivo_per_scadenza_collegato_alla_voce(
     entry = crea_voce_veicolo()
     await configura(hass, entry)
 
-    voce = device_registry.async_get_device(identifiers={(DOMAIN, entry.entry_id)})
-    revisione = device_registry.async_get_device(identifiers={(DOMAIN, "sub_revisione")})
+    voce = device_registry.async_get_device_by_identifier((DOMAIN, entry.entry_id), entry.entry_id)
+    revisione = device_registry.async_get_device_by_identifier((DOMAIN, "sub_revisione"), entry.entry_id)
     assert voce is not None and revisione is not None
     assert revisione.name == "Panda Revisione"
     assert revisione.model == "Revisione"
@@ -93,5 +93,5 @@ async def test_eliminare_la_scadenza_toglie_dispositivo_ed_entita(
     hass.config_entries.async_remove_subentry(entry, "sub_revisione")
     await hass.async_block_till_done()
 
-    assert device_registry.async_get_device(identifiers={(DOMAIN, "sub_revisione")}) is None
+    assert device_registry.async_get_device_by_identifier((DOMAIN, "sub_revisione"), entry.entry_id) is None
     assert entity_registry.async_get_entity_id("sensor", DOMAIN, "sub_revisione_scadenza") is None
