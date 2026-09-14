@@ -5267,7 +5267,7 @@ Quando il repository viene pubblicato su GitHub (decisione dell'utente), control
 ## Note di esecuzione (2026-09-14)
 
 - Lavoro svolto nel worktree `.claude/worktrees/fase-1`, branch locale `worktree-fase-1`, pubblicato come `fase-1` su
-  `https://github.com/iAlias/scadenze-auto-casa-salute` (privato).
+  `https://github.com/iAlias/ScadenzeAutoCasaSalute` (privato).
 - Task 1–5 verificati in locale (Windows, `.venv-logica`): 131 test verdi.
 - I test HA non girano su Windows (`fcntl` e DLL bloccate): i task 6–12 sono verificati in CI.
 - Deviazioni dall'ordine del piano:
