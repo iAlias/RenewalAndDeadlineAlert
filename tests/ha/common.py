@@ -91,7 +91,8 @@ def crea_voce_veicolo(**opzioni: Any) -> MockConfigEntry:
 
 async def configura(hass: HomeAssistant, entry: MockConfigEntry) -> None:
     entry.add_to_hass(hass)
-    assert await hass.config_entries.async_setup(entry.entry_id)
+    riuscito = await hass.config_entries.async_setup(entry.entry_id)
+    assert riuscito, f"setup non riuscito: stato={entry.state}, motivo={entry.reason}"
     await hass.async_block_till_done()
 
 
