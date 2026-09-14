@@ -1,0 +1,13 @@
+{
+  "domain": "scadenze",
+  "name": "Scadenze Auto & Casa",
+  "codeowners": ["@iAlias"],
+  "config_flow": true,
+  "dependencies": [],
+  "documentation": "https://github.com/iAlias/scadenze-auto-casa-salute",
+  "integration_type": "service",
+  "iot_class": "calculated",
+  "issue_tracker": "https://github.com/iAlias/scadenze-auto-casa-salute/issues",
+  "requirements": [],
+  "version": "0.1.0"
+}

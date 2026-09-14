@@ -1,0 +1,35 @@
+blueprint:
+  name: Promemoria delle scadenze
+  description: >-
+    Esegue le azioni che scegli quando Scadenze Auto & Casa segnala una scadenza.
+    Nelle azioni puoi usare trigger.event.data.messaggio, trigger.event.data.voce
+    e trigger.event.data.scadenza.
+  domain: automation
+  source_url: https://github.com/iAlias/scadenze-auto-casa-salute/blob/main/blueprints/automation/scadenze/promemoria_scadenze.yaml
+  input:
+    voce:
+      name: Voce
+      description: Il nome della voce da seguire. Vuoto = tutte le voci.
+      default: ""
+      selector:
+        text: {}
+    azioni:
+      name: Azioni
+      description: Cosa fare quando arriva un promemoria.
+      selector:
+        action: {}
+
+mode: queued
+
+triggers:
+  - trigger: event
+    event_type: scadenze_promemoria
+
+variables:
+  voce_seguita: !input voce
+
+conditions:
+  - condition: template
+    value_template: "{{ voce_seguita == '' or trigger.event.data.voce == voce_seguita }}"
+
+actions: !input azioni

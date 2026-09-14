@@ -1,0 +1,191 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "What has deadlines?",
+        "menu_options": {
+          "veicolo": "A vehicle",
+          "casa": "A home",
+          "persona": "A person",
+          "generica": "Something else"
+        }
+      },
+      "veicolo": {
+        "title": "New vehicle",
+        "data": {
+          "nome": "Name",
+          "tipo_veicolo": "Vehicle type",
+          "immatricolazione": "First registration"
+        },
+        "data_description": {
+          "immatricolazione": "Only month and year matter: the first inspection is due four years later."
+        }
+      },
+      "casa": {
+        "title": "New home",
+        "data": {
+          "nome": "Name"
+        }
+      },
+      "persona": {
+        "title": "New person",
+        "data": {
+          "nome": "Name",
+          "data_nascita": "Date of birth"
+        },
+        "data_description": {
+          "data_nascita": "Used to calculate when the driving licence and the identity card expire."
+        }
+      },
+      "generica": {
+        "title": "New item",
+        "data": {
+          "nome": "Name"
+        }
+      }
+    },
+    "error": {
+      "campo_obbligatorio": "This field is required.",
+      "data_futura": "The date cannot be in the future."
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Reminders",
+        "data": {
+          "sensore_km": "Odometer sensor",
+          "notifiche_attive": "Send notifications",
+          "servizio_notifica": "Notify service",
+          "preavvisi": "Advance notice (days)",
+          "orario_notifica": "Time of day"
+        },
+        "data_description": {
+          "sensore_km": "A sensor with the vehicle's total kilometres, used by the service deadline.",
+          "servizio_notifica": "For example notify.mobile_app_phone. The scadenze_promemoria event is fired anyway.",
+          "preavvisi": "Days before the deadline, separated by commas, for example 30, 7, 1."
+        }
+      }
+    },
+    "error": {
+      "servizio_non_trovato": "This notify service does not exist.",
+      "preavvisi_non_validi": "Use whole numbers between 1 and 365, separated by commas."
+    }
+  },
+  "config_subentries": {
+    "scadenza": {
+      "entry_type": "Deadline",
+      "initiate_flow": {
+        "user": "Add deadline",
+        "reconfigure": "Edit deadline"
+      },
+      "step": {
+        "user": {
+          "title": "Choose the deadline",
+          "data": {
+            "modello": "Deadline type"
+          }
+        },
+        "dettagli": {
+          "title": "{modello}",
+          "data": {
+            "nome": "Name",
+            "scadenza": "Due date",
+            "mese_scadenza_bollo": "Month the road tax expires",
+            "ultimo_rinnovo": "Last done on",
+            "intervallo_mesi": "Every how many months",
+            "km_ultimo_rinnovo": "Kilometres at the last service",
+            "intervallo_km": "Every how many kilometres",
+            "ricorrenza": "Repeats"
+          },
+          "data_description": {
+            "scadenza": "Suggested dates come from the rules: check them against your documents.",
+            "mese_scadenza_bollo": "The expiry month on the last receipt. Payment is due by the end of the following month.",
+            "intervallo_km": "0 disables the kilometre limit."
+          }
+        }
+      },
+      "error": {
+        "campo_obbligatorio": "This field is required.",
+        "data_non_valida": "This date is not valid.",
+        "data_futura": "The date cannot be in the future.",
+        "intervallo_non_valido": "The value is out of range.",
+        "scadenza_prima_della_nascita": "The due date is before the date of birth."
+      },
+      "abort": {
+        "reconfigure_successful": "Deadline updated."
+      }
+    }
+  },
+  "selector": {
+    "tipo_veicolo": {
+      "options": {
+        "auto": "Car",
+        "moto": "Motorcycle"
+      }
+    },
+    "modello": {
+      "options": {
+        "revisione": "Vehicle inspection (revisione)",
+        "bollo": "Road tax (bollo)",
+        "assicurazione": "Insurance",
+        "tagliando": "Service",
+        "gomme": "Tyre change",
+        "manutenzione_caldaia": "Boiler maintenance",
+        "controllo_fumi": "Boiler emissions check",
+        "climatizzatore": "Air conditioner cleaning",
+        "estintore": "Fire extinguisher check",
+        "filtri_acqua": "Water filter change",
+        "canna_fumaria": "Chimney sweeping",
+        "carta_identita": "Identity card",
+        "patente": "Driving licence",
+        "passaporto": "Passport",
+        "tessera_sanitaria": "Health insurance card",
+        "personalizzata": "Custom"
+      }
+    },
+    "ricorrenza": {
+      "options": {
+        "nessuna": "Does not repeat",
+        "dalla_scadenza": "Every N months from the due date",
+        "dal_rinnovo": "Every N months from when it is done"
+      }
+    }
+  },
+  "entity": {
+    "sensor": {
+      "giorni_mancanti": {
+        "name": "Days left"
+      },
+      "km_mancanti": {
+        "name": "Kilometres left"
+      }
+    },
+    "binary_sensor": {
+      "in_scadenza": {
+        "name": "Due soon"
+      }
+    },
+    "button": {
+      "rinnovato": {
+        "name": "Renewed"
+      }
+    },
+    "calendar": {
+      "calendario": {
+        "name": "Deadlines"
+      }
+    },
+    "todo": {
+      "da_rinnovare": {
+        "name": "To renew"
+      }
+    }
+  },
+  "issues": {
+    "servizio_notifica_mancante": {
+      "title": "Notify service not found for {voce}",
+      "description": "Scadenze Auto & Casa could not send a reminder because {servizio} does not exist. Open the options of {voce} and choose an existing notify service."
+    }
+  }
+}
