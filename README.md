@@ -20,7 +20,7 @@ Home Assistant **2026.8** o successivo.
 ## Installazione
 
 1. HACS → Integrazioni → menu ⋮ → **Repository personalizzati**
-2. Aggiungi `https://github.com/iAlias/scadenze-auto-casa-salute` con categoria **Integration**
+2. Aggiungi `https://github.com/iAlias/ScadenzeAutoCasaSalute` con categoria **Integration**
 3. Installa e riavvia Home Assistant
 4. **Impostazioni → Dispositivi e servizi → Aggiungi integrazione → Scadenze Auto & Casa**
 

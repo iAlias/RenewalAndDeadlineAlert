@@ -4,10 +4,10 @@
   "codeowners": ["@iAlias"],
   "config_flow": true,
   "dependencies": [],
-  "documentation": "https://github.com/iAlias/scadenze-auto-casa-salute",
+  "documentation": "https://github.com/iAlias/ScadenzeAutoCasaSalute",
   "integration_type": "service",
   "iot_class": "calculated",
-  "issue_tracker": "https://github.com/iAlias/scadenze-auto-casa-salute/issues",
+  "issue_tracker": "https://github.com/iAlias/ScadenzeAutoCasaSalute/issues",
   "requirements": [],
   "version": "0.1.0"
 }
