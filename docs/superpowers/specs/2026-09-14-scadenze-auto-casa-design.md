@@ -476,8 +476,9 @@ Queste voci prevalgono sulle sezioni indicate.
 
 ## 16. Correzioni emerse durante l'implementazione (2026-09-14)
 
-1. **§13 — repository.** Il repository reale è `iAlias/ScadenzeAutoCasaSalute` (privato): `manifest.json`,
-   README e blueprint puntano a questo indirizzo.
+1. **§13 — repository.** Il repository reale è `iAlias/ScadenzeAutoCasaSalute`, pubblico (creato come
+   `scadenze-auto-casa-salute` privato, poi rinominato e reso pubblico perché HACS accetta solo repository
+   pubblici): `manifest.json`, README e blueprint puntano a questo indirizzo.
 2. **Ordine dei moduli.** Home Assistant carica la piattaforma `config_flow` durante il setup di ogni config entry:
    con `config_flow: true` nel manifest, `config_flow.py` deve esistere prima di qualunque test di setup.
 3. **§12 — ambiente.** Su Windows i test con Home Assistant non si possono eseguire: `homeassistant.runner` importa
