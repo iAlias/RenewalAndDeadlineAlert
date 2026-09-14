@@ -6,6 +6,20 @@ on:
   workflow_dispatch:
 
 jobs:
+  hassfest:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: home-assistant/actions/hassfest@master
+
+  hacs:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: hacs/action@main
+        with:
+          category: integration
+          ignore: brands description topics
+
   test:
     runs-on: ubuntu-latest
     steps:
