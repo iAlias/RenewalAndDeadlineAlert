@@ -14,9 +14,11 @@ from homeassistant.helpers.event import (
     async_track_state_change_event,
     async_track_time_change,
 )
+from homeassistant.util import dt as dt_util
 
 from .const import DOMAIN, ETICHETTE_TIPO_VOCE
 from .coordinator import ScadenzeCoordinator
+from .notifiche import GestoreNotifiche
 
 PLATFORMS: list[Platform] = [
     Platform.BINARY_SENSOR,
@@ -34,6 +36,7 @@ class ScadenzeRuntime:
     """Ciò che serve alle piattaforme di una voce caricata."""
 
     coordinator: ScadenzeCoordinator
+    notifiche: GestoreNotifiche
     device_id_voce: str
     firma: Firma
 
@@ -61,8 +64,11 @@ async def async_setup_entry(hass: HomeAssistant, entry: ScadenzeConfigEntry) -> 
         model=ETICHETTE_TIPO_VOCE[coordinator.voce.tipo],
         entry_type=dr.DeviceEntryType.SERVICE,
     )
+    notifiche = GestoreNotifiche(hass, entry, coordinator)
+    await notifiche.async_carica()
     entry.runtime_data = ScadenzeRuntime(
         coordinator=coordinator,
+        notifiche=notifiche,
         device_id_voce=dispositivo.id,
         firma=firma_entry(entry),
     )
@@ -84,7 +90,11 @@ async def async_setup_entry(hass: HomeAssistant, entry: ScadenzeConfigEntry) -> 
         entry.async_on_unload(
             async_track_state_change_event(hass, [coordinator.sensore_km], _km_cambiati)
         )
+    entry.async_on_unload(notifiche.async_pianifica())
     entry.async_on_unload(entry.add_update_listener(_async_entry_aggiornata))
+
+    if dt_util.now().time() >= notifiche.orario:
+        entry.async_create_task(hass, notifiche.async_esegui(), "scadenze: promemoria all'avvio")
     return True
 
 
