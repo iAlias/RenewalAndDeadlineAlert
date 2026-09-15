@@ -84,6 +84,33 @@ actions:
       message: "{{ trigger.event.data.messaggio }}"
 ```
 
+## La card
+
+L'integrazione porta con sé una card Lovelace già registrata: non serve aggiungere risorse alla dashboard.
+Si trova nel selettore delle card come **Scadenze** e si configura anche dall'editor visuale.
+
+```yaml
+type: custom:scadenze-card
+titolo: Scadenze
+voce: <voce>            # facoltativo: senza, mostra tutte le voci
+nascondi_ok: false
+mostra_giorni: true
+mostra_km: true
+mostra_rinnovato: true
+```
+
+| Opzione | Predefinito | Cosa fa |
+|---|---|---|
+| `titolo` | nessuno | Intestazione della card |
+| `voce` | tutte | Mostra solo le scadenze di una voce |
+| `nascondi_ok` | `false` | Mostra solo le scadenze superate o vicine |
+| `mostra_giorni` | `true` | Aggiunge «tra N giorni» o «scaduta da N giorni» |
+| `mostra_km` | `true` | Aggiunge i km mancanti al tagliando |
+| `mostra_rinnovato` | `true` | Pulsante «Rinnovato»: il primo clic chiede conferma, il secondo rinnova |
+
+Ogni riga ha una striscia colorata: rossa se la scadenza è superata, ambra se è vicina, verde se è in regola,
+grigia se è illimitata o completata.
+
 ## Limiti dichiarati
 
 - **Le date suggerite sono calcoli, non documenti ufficiali.** Controllale con libretto, ricevute e documenti; si correggono sempre con «Riconfigura».
