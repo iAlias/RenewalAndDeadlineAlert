@@ -48,3 +48,8 @@ PREDEFINITO_ORARIO_NOTIFICA: Final = "09:00:00"
 FINESTRA_SENZA_PREAVVISI: Final = 30
 SOGLIA_KM: Final = 1000
 TOLLERANZA_ASSICURAZIONE_GIORNI: Final = 15
+
+# Card Lovelace (fase 2)
+URL_STATICO: Final = "/scadenze_static"
+NOME_FILE_CARD: Final = "scadenze-card.js"
+CHIAVE_FRONTEND_REGISTRATO: Final = f"{DOMAIN}_frontend_registrato"
