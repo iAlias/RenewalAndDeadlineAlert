@@ -33,7 +33,7 @@ nessuna risorsa da aggiungere a mano.
 custom_components/scadenze/
 ├── __init__.py              + async_setup: registra i file statici e il modulo nel frontend
 ├── const.py                 + URL_STATICO, NOME_FILE_CARD
-├── manifest.json            + dependencies: frontend, http; version 0.2.0
+├── manifest.json            + dependencies: http; after_dependencies: frontend; version 0.2.0
 └── frontend/
     ├── scadenze-card.js     Web Component della card e del suo editor
     └── logica.js            modulo puro: raccolta, filtri, ordinamento, testi
@@ -49,8 +49,11 @@ README.md                    + sezione «La card»
 - `async_setup(hass, config)` (una volta per avvio di Home Assistant, non per voce):
   1. `await hass.http.async_register_static_paths([StaticPathConfig(URL_STATICO, <cartella frontend>, True)])`
      con `URL_STATICO = "/scadenze_static"`;
-  2. `add_extra_js_url(hass, f"{URL_STATICO}/scadenze-card.js?v={versione}")`, dove `versione` è la versione
-     dell'integrazione letta con `async_get_integration(hass, DOMAIN)`.
+  2. se `"frontend" in hass.config.components`, `add_extra_js_url(hass, f"{URL_STATICO}/scadenze-card.js?v={versione}")`,
+     dove `versione` è la versione dell'integrazione letta con `async_get_integration(hass, DOMAIN)`.
+- Il manifest dichiara `dependencies: ["http"]` e `after_dependencies: ["frontend"]`: in un'installazione reale il
+  frontend è sempre caricato prima dell'integrazione, mentre nell'ambiente di test il pacchetto del frontend non è
+  installato e renderlo una dipendenza impedirebbe l'avvio di tutti i test.
 - Una guardia in `hass.data` evita doppie registrazioni se `async_setup` venisse richiamato.
 - Poiché l'integrazione ora definisce `async_setup`, il modulo dichiara
   `CONFIG_SCHEMA = cv.config_entry_only_config_schema(DOMAIN)` (richiesto da hassfest).
@@ -125,12 +128,17 @@ mostra_rinnovato: true
   raccolta e raggruppamento, nome della voce e della scadenza, filtro per voce, `nascondi_ok`,
   ordinamento, testi dei giorni in italiano e inglese, colore per stato, formato dei km,
   gruppi incompleti ignorati.
+- **Card (`node --test tests/card`)**, con elementi DOM finti al posto del browser: registrazione di card,
+  editor e `customCards`; righe con voce, data, giorni e pulsante; modalità a voce singola; lista vuota;
+  rinnovo in due tempi che chiama `button.press` solo alla conferma; l'editor emette `config-changed` senza
+  `voce` e `titolo` vuoti.
 - **Backend (pytest, CI):** dopo il setup il file `scadenze-card.js` risponde 200 all'URL statico e
-  contiene `customElements.define`; l'URL con la versione è tra i moduli extra del frontend;
-  una seconda chiamata a `async_setup` non registra due volte.
+  contiene `customElements.define`; con `frontend` fra i componenti caricati, `add_extra_js_url` riceve l'URL
+  con la versione (verificato con un mock); senza `frontend` non viene chiamata; una seconda chiamata a
+  `async_setup` non registra due volte.
 - **CI:** nuovo job `card` con `actions/setup-node` (Node 22) che esegue `node --test tests/card`.
 
 ## 8. Distribuzione
 
-- `manifest.json`: `dependencies: ["frontend", "http"]`, `version: "0.2.0"`.
+- `manifest.json`: `dependencies: ["http"]`, `after_dependencies: ["frontend"]`, `version: "0.2.0"`.
 - README: sezione «La card» con esempio YAML, opzioni e schermata descritta a parole.
