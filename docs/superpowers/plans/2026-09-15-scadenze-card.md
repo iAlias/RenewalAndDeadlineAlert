@@ -19,7 +19,7 @@
 - Colori solo tramite variabili del tema: `--error-color`, `--warning-color`, `--success-color`, `--disabled-text-color`.
 - Rinnovo in due tempi, conferma valida 4 secondi, nessuna finestra di dialogo del browser.
 - `manifest.json` passa a `version: "0.2.0"`.
-- Test JavaScript: `node --test tests/card` (Node 22, rileva da solo la sintassi dei moduli ES). Test HA solo in CI (su Windows non girano).
+- Test JavaScript: `node --test "tests/card/*.test.mjs"` (Node 22, rileva da solo la sintassi dei moduli ES). Test HA solo in CI (su Windows non girano).
 - Ogni commit termina con:
   ```
   Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>
@@ -239,7 +239,7 @@ test("si può rinnovare solo con pulsante e scadenza attiva", () => {
 
 - [ ] **Step 2: Eseguire i test e verificare che falliscono**
 
-Run: `node --test tests/card`
+Run: `node --test "tests/card/*.test.mjs"`
 Expected: FAIL con `ERR_MODULE_NOT_FOUND` per `custom_components/scadenze/frontend/logica.js`
 
 - [ ] **Step 3: Implementare**
@@ -420,7 +420,7 @@ export function puoRinnovare(scadenza) {
 
 - [ ] **Step 4: Eseguire i test e verificare che passano**
 
-Run: `node --test tests/card`
+Run: `node --test "tests/card/*.test.mjs"`
 Expected: PASS (11 test)
 
 - [ ] **Step 5: Commit**
@@ -639,7 +639,7 @@ test("l'editor emette la configurazione senza voce e titolo vuoti", () => {
 
 - [ ] **Step 2: Eseguire i test e verificare che falliscono**
 
-Run: `node --test tests/card`
+Run: `node --test "tests/card/*.test.mjs"`
 Expected: FAIL in `card.test.mjs` con `ERR_MODULE_NOT_FOUND` per `scadenze-card.js`; i test di `logica.test.mjs` passano
 
 - [ ] **Step 3: Implementare**
@@ -895,7 +895,7 @@ if (!window.customCards.some((card) => card.type === "scadenze-card")) {
 
 - [ ] **Step 4: Eseguire i test e verificare che passano**
 
-Run: `node --test tests/card`
+Run: `node --test "tests/card/*.test.mjs"`
 Expected: PASS (11 test di `logica.test.mjs` e 7 di `card.test.mjs`)
 
 - [ ] **Step 5: Commit**
@@ -1112,7 +1112,7 @@ In fondo a `.github/workflows/validate.yml` aggiungere, allineato agli altri job
       - uses: actions/setup-node@v4
         with:
           node-version: "22"
-      - run: node --test tests/card
+      - run: node --test "tests/card/*.test.mjs"
 ```
 
 - [ ] **Step 2: Documentare la card**
@@ -1151,7 +1151,7 @@ grigia se è illimitata o completata.
 
 - [ ] **Step 3: Verifica locale della parte JavaScript**
 
-Run: `node --test tests/card`
+Run: `node --test "tests/card/*.test.mjs"`
 Expected: PASS (18 test)
 
 - [ ] **Step 4: Commit e push del branch**

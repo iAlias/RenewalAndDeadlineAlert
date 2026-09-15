@@ -124,11 +124,11 @@ mostra_rinnovato: true
 
 ## 7. Test
 
-- **Logica (`node --test tests/card`)**, con oggetti `hass` finti:
+- **Logica (`node --test "tests/card/*.test.mjs"`)**, con oggetti `hass` finti:
   raccolta e raggruppamento, nome della voce e della scadenza, filtro per voce, `nascondi_ok`,
   ordinamento, testi dei giorni in italiano e inglese, colore per stato, formato dei km,
   gruppi incompleti ignorati.
-- **Card (`node --test tests/card`)**, con elementi DOM finti al posto del browser: registrazione di card,
+- **Card (`node --test "tests/card/*.test.mjs"`)**, con elementi DOM finti al posto del browser: registrazione di card,
   editor e `customCards`; righe con voce, data, giorni e pulsante; modalità a voce singola; lista vuota;
   rinnovo in due tempi che chiama `button.press` solo alla conferma; l'editor emette `config-changed` senza
   `voce` e `titolo` vuoti.
@@ -136,7 +136,7 @@ mostra_rinnovato: true
   contiene `customElements.define`; con `frontend` fra i componenti caricati, `add_extra_js_url` riceve l'URL
   con la versione (verificato con un mock); senza `frontend` non viene chiamata; una seconda chiamata a
   `async_setup` non registra due volte.
-- **CI:** nuovo job `card` con `actions/setup-node` (Node 22) che esegue `node --test tests/card`.
+- **CI:** nuovo job `card` con `actions/setup-node` (Node 22) che esegue `node --test "tests/card/*.test.mjs"`.
 
 ## 8. Distribuzione
 
