@@ -1,4 +1,4 @@
-# Scadenze Auto & Casa
+# Renewal & Deadline Alert (Home, Car, Health)
 
 [![Validate](https://github.com/iAlias/ScadenzeAutoCasaSalute/actions/workflows/validate.yml/badge.svg)](https://github.com/iAlias/ScadenzeAutoCasaSalute/actions/workflows/validate.yml)
 [![HACS: Custom repository](https://img.shields.io/badge/HACS-Custom-orange.svg)](https://hacs.xyz/docs/faq/custom_repositories/)
@@ -48,7 +48,7 @@ Questa integrazione non è ancora nello store predefinito di HACS; aggiungila co
 1. HACS → Integrazioni → menu ⋮ → **Repository personalizzati**
 2. Aggiungi `https://github.com/iAlias/ScadenzeAutoCasaSalute` con categoria **Integration**
 3. Installa, poi riavvia Home Assistant
-4. **Impostazioni → Dispositivi e servizi → Aggiungi integrazione → Scadenze Auto & Casa**
+4. **Impostazioni → Dispositivi e servizi → Aggiungi integrazione → Renewal & Deadline Alert (Home, Car, Health)**
 
 ### Manualmente
 

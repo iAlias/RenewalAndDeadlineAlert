@@ -1,4 +1,4 @@
-// Card Lovelace «Scadenze» di Scadenze Auto & Casa: Web Component senza build.
+// Card Lovelace «Scadenze» di Renewal & Deadline Alert (Home, Car, Health): Web Component senza build.
 // La logica sta in logica.js, importata con la stessa versione anti-cache di questo file.
 
 const {
@@ -284,8 +284,8 @@ window.customCards = window.customCards ?? [];
 if (!window.customCards.some((card) => card.type === "scadenze-card")) {
   window.customCards.push({
     type: "scadenze-card",
-    name: "Scadenze",
-    description: "Scadenze Auto & Casa a semaforo, con rinnovo confermato.",
+    name: "Deadlines",
+    description: "Renewal & Deadline Alert (Home, Car, Health), colour-coded, with confirmed renewal.",
     preview: true,
   });
 }

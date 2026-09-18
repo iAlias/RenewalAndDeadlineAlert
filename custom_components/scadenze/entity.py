@@ -1,4 +1,4 @@
-"""Entità base di Scadenze Auto & Casa."""
+"""Entità base di Renewal & Deadline Alert (Home, Car, Health)."""
 
 from __future__ import annotations
 

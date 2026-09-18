@@ -213,7 +213,7 @@
   "issues": {
     "servizio_notifica_mancante": {
       "title": "Notify service not found for {voce}",
-      "description": "Scadenze Auto & Casa could not send a reminder because {servizio} does not exist. Open the options of {voce} and choose an existing notify service."
+      "description": "Renewal & Deadline Alert (Home, Car, Health) could not send a reminder because {servizio} does not exist. Open the options of {voce} and choose an existing notify service."
     }
   }
 }

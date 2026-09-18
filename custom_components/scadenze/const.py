@@ -1,4 +1,4 @@
-"""Costanti condivise di Scadenze Auto & Casa.
+"""Costanti condivise di Renewal & Deadline Alert (Home, Car, Health).
 
 Il modulo non importa Home Assistant: lo usano anche i moduli di logica pura.
 """

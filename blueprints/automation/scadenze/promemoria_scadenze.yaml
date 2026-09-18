@@ -1,7 +1,7 @@
 blueprint:
   name: Promemoria delle scadenze
   description: >-
-    Esegue le azioni che scegli quando Scadenze Auto & Casa segnala una scadenza.
+    Esegue le azioni che scegli quando Renewal & Deadline Alert (Home, Car, Health) segnala una scadenza.
     Nelle azioni puoi usare trigger.event.data.messaggio, trigger.event.data.voce
     e trigger.event.data.scadenza.
   domain: automation

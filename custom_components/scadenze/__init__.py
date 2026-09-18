@@ -1,4 +1,4 @@
-"""Scadenze Auto & Casa: scadenze italiane di veicoli, casa e documenti."""
+"""Renewal & Deadline Alert (Home, Car, Health): scadenze italiane di veicoli, casa e documenti."""
 
 from __future__ import annotations
 

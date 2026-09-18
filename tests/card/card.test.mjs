@@ -103,7 +103,7 @@ test("registra card, editor e voce nel selettore delle card", () => {
   assert.ok(customElements.get("scadenze-card-editor"));
   assert.deepEqual(
     window.customCards.filter((c) => c.type === "scadenze-card").map((c) => [c.name, c.preview]),
-    [["Scadenze", true]],
+    [["Deadlines", true]],
   );
   assert.deepEqual(customElements.get("scadenze-card").getStubConfig(), { titolo: "Scadenze" });
 });

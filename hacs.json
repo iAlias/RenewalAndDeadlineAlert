@@ -1,5 +1,5 @@
 {
-  "name": "Scadenze Auto & Casa",
+  "name": "Renewal & Deadline Alert (Home, Car, Health)",
   "homeassistant": "2026.8.0",
   "render_readme": true,
   "country": ["IT"]

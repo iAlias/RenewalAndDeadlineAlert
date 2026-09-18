@@ -213,7 +213,7 @@
   "issues": {
     "servizio_notifica_mancante": {
       "title": "Servizio di notifica non trovato per {voce}",
-      "description": "Scadenze Auto & Casa non ha potuto inviare un promemoria perché {servizio} non esiste. Apri le opzioni di {voce} e scegli un servizio di notifica esistente."
+      "description": "Renewal & Deadline Alert (Home, Car, Health) non ha potuto inviare un promemoria perché {servizio} non esiste. Apri le opzioni di {voce} e scegli un servizio di notifica esistente."
     }
   }
 }

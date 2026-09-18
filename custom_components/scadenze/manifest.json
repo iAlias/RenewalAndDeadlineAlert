@@ -1,6 +1,6 @@
 {
   "domain": "scadenze",
-  "name": "Scadenze Auto & Casa",
+  "name": "Renewal & Deadline Alert (Home, Car, Health)",
   "after_dependencies": ["frontend"],
   "codeowners": ["@iAlias"],
   "config_flow": true,
