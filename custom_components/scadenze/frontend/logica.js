@@ -5,6 +5,8 @@ export const PIATTAFORMA = "scadenze";
 export const OPZIONI_PREDEFINITE = Object.freeze({
   titolo: "",
   voce: "",
+  modalita: "",
+  scelte: [],
   nascondi_ok: false,
   mostra_giorni: true,
   mostra_km: true,
@@ -103,8 +105,10 @@ export function raccogliScadenze(hass) {
 
 export function filtraEOrdina(scadenze, config) {
   const opzioni = normalizzaConfig(config);
+  const modalita = opzioni.modalita || (opzioni.voce ? "voce" : "tutte");
   return scadenze
-    .filter((s) => !opzioni.voce || s.voceId === opzioni.voce)
+    .filter((s) => modalita !== "voce" || s.voceId === opzioni.voce)
+    .filter((s) => modalita !== "scelte" || opzioni.scelte.includes(s.id))
     .filter((s) => !opzioni.nascondi_ok || STATI_VISIBILI_SE_NASCONDI_OK.has(s.stato))
     .sort((a, b) => {
       const gruppo = (GRUPPO_ORDINE[a.stato] ?? 3) - (GRUPPO_ORDINE[b.stato] ?? 3);
