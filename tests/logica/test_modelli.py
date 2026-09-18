@@ -13,6 +13,7 @@ from custom_components.scadenze.modelli import (
     ErroreForm,
     costruisci_scadenza,
     modelli_per_tipo,
+    modelli_raccomandati,
     valori_da_scadenza,
     valori_suggeriti,
 )
@@ -203,3 +204,21 @@ def test_valori_da_scadenza_ricostruiscono_la_scadenza(
 ) -> None:
     scadenza = costruisci_scadenza(chiave, form, voce, OGGI)
     assert costruisci_scadenza(chiave, valori_da_scadenza(scadenza), voce, OGGI) == scadenza
+
+
+def test_modelli_raccomandati_esclude_personalizzata() -> None:
+    assert modelli_raccomandati("veicolo") == [
+        "revisione", "bollo", "assicurazione", "tagliando", "gomme",
+    ]
+    assert modelli_raccomandati("casa") == [
+        "manutenzione_caldaia",
+        "controllo_fumi",
+        "climatizzatore",
+        "estintore",
+        "filtri_acqua",
+        "canna_fumaria",
+    ]
+    assert modelli_raccomandati("persona") == [
+        "carta_identita", "patente", "passaporto", "tessera_sanitaria",
+    ]
+    assert modelli_raccomandati("generica") == []

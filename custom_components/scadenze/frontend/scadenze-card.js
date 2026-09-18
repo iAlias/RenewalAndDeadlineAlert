@@ -163,19 +163,60 @@ class ScadenzeCard extends HTMLElement {
   }
 }
 
-const SCHEMA_EDITOR = [
-  { name: "titolo", selector: { text: {} } },
-  { name: "voce", selector: { config_entry: { integration: "scadenze" } } },
-  { name: "nascondi_ok", selector: { boolean: {} } },
-  { name: "mostra_giorni", selector: { boolean: {} } },
-  { name: "mostra_km", selector: { boolean: {} } },
-  { name: "mostra_rinnovato", selector: { boolean: {} } },
-];
+const ETICHETTE_MODALITA = {
+  it: { tutte: "Tutte", voce: "Una voce", scelte: "Scelgo io" },
+  en: { tutte: "All", voce: "One item", scelte: "I choose" },
+};
+
+function schemaEditor(codice, modalita, scadenze) {
+  const campi = [
+    { name: "titolo", selector: { text: {} } },
+    {
+      name: "modalita",
+      selector: {
+        select: {
+          mode: "dropdown",
+          options: ["tutte", "voce", "scelte"].map((valore) => ({
+            value: valore,
+            label: ETICHETTE_MODALITA[codice][valore],
+          })),
+        },
+      },
+    },
+  ];
+  if (modalita === "voce") {
+    campi.push({ name: "voce", selector: { config_entry: { integration: "scadenze" } } });
+  }
+  if (modalita === "scelte") {
+    campi.push({
+      name: "scelte",
+      selector: {
+        select: {
+          multiple: true,
+          mode: "list",
+          options: scadenze.map((s) => ({
+            value: s.id,
+            label: s.voce ? `${s.nome} — ${s.voce}` : s.nome,
+          })),
+        },
+      },
+    });
+  }
+  campi.push(
+    { name: "nascondi_ok", selector: { boolean: {} } },
+    { name: "mostra_giorni", selector: { boolean: {} } },
+    { name: "mostra_km", selector: { boolean: {} } },
+    { name: "mostra_rinnovato", selector: { boolean: {} } },
+  );
+  return campi;
+}
 
 const ETICHETTE_EDITOR = {
   it: {
     titolo: "Titolo",
-    voce: "Voce (vuoto = tutte)",
+    modalita: "Cosa mostrare",
+    voce: "Voce",
+    scelte: "Scadenze da mostrare",
     nascondi_ok: "Nascondi le scadenze in regola",
     mostra_giorni: "Mostra i giorni mancanti",
     mostra_km: "Mostra i km mancanti",
@@ -183,7 +224,9 @@ const ETICHETTE_EDITOR = {
   },
   en: {
     titolo: "Title",
-    voce: "Item (empty = all)",
+    modalita: "What to show",
+    voce: "Item",
+    scelte: "Deadlines to show",
     nascondi_ok: "Hide deadlines that are fine",
     mostra_giorni: "Show days left",
     mostra_km: "Show kilometres left",
@@ -216,15 +259,19 @@ class ScadenzeCardEditor extends HTMLElement {
       this._form.addEventListener("value-changed", (evento) => this._cambiata(evento.detail.value));
       this.appendChild(this._form);
     }
+    const dati = normalizzaConfig(this._config);
+    dati.modalita = dati.modalita || "tutte";
+    const scadenze = this._hass ? raccogliScadenze(this._hass) : [];
     this._form.hass = this._hass;
-    this._form.schema = SCHEMA_EDITOR;
-    this._form.data = normalizzaConfig(this._config);
+    this._form.schema = schemaEditor(lingua(this._hass), dati.modalita, scadenze);
+    this._form.data = dati;
   }
 
   _cambiata(valore) {
     const config = { ...valore };
     if (!config.titolo) delete config.titolo;
     if (!config.voce) delete config.voce;
+    if (!config.scelte || !config.scelte.length) delete config.scelte;
     this._config = config;
     this.dispatchEvent(new CustomEvent("config-changed", { detail: { config }, bubbles: true, composed: true }));
   }

@@ -110,6 +110,27 @@ test("filtra per voce e nasconde le scadenze ok", () => {
   assert.deepEqual(filtraEOrdina(scadenze, { nascondi_ok: true }).map((s) => s.id), ["dev_bollo", "dev_rev"]);
 });
 
+test("modalita scelte mostra solo le scadenze indicate, in qualunque ordine di selezione", () => {
+  const scadenze = raccogliScadenze(hassDiProva());
+  assert.deepEqual(
+    filtraEOrdina(scadenze, { modalita: "scelte", scelte: ["dev_tag", "dev_bollo"] }).map((s) => s.id),
+    ["dev_bollo", "dev_tag"],
+  );
+  assert.deepEqual(filtraEOrdina(scadenze, { modalita: "scelte", scelte: [] }).map((s) => s.id), []);
+});
+
+test("senza modalita si comporta come prima: voce se impostata, altrimenti tutte", () => {
+  const scadenze = raccogliScadenze(hassDiProva());
+  assert.deepEqual(
+    filtraEOrdina(scadenze, { voce: "entry_mario" }).map((s) => s.id),
+    filtraEOrdina(scadenze, { modalita: "voce", voce: "entry_mario" }).map((s) => s.id),
+  );
+  assert.deepEqual(
+    filtraEOrdina(scadenze, {}).map((s) => s.id),
+    filtraEOrdina(scadenze, { modalita: "tutte" }).map((s) => s.id),
+  );
+});
+
 test("testo dei giorni in italiano e inglese", () => {
   const casi = [
     [{ stato: "in_scadenza", giorni: 0 }, "oggi", "today"],
@@ -152,6 +173,8 @@ test("configurazione con valori predefiniti", () => {
   assert.deepEqual(normalizzaConfig({ titolo: "Casa" }), {
     titolo: "Casa",
     voce: "",
+    modalita: "",
+    scelte: [],
     nascondi_ok: false,
     mostra_giorni: true,
     mostra_km: true,
