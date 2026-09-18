@@ -147,39 +147,51 @@ test("dimensione della card", () => {
   assert.equal(nuovaCard({}, hassDiProva()).getCardSize(), 3);
 });
 
-test("l'editor emette la configurazione senza voce e titolo vuoti", () => {
+test("l'editor mostra i campi giusti per ogni modalita e pulisce la configurazione", () => {
   const editor = document.createElement("scadenze-card-editor");
   const ricevute = [];
   editor.addEventListener("config-changed", (evento) => ricevute.push(evento.detail.config));
   editor.setConfig({ type: "custom:scadenze-card" });
   editor.hass = hassDiProva();
 
-  const form = editor.figli[0];
+  let form = editor.figli[0];
   assert.equal(form.data.mostra_giorni, true);
-  assert.equal(form.schema.find((campo) => campo.name === "voce").selector.config_entry.integration, "scadenze");
+  assert.equal(form.data.modalita, "tutte");
+  assert.ok(!form.schema.some((campo) => campo.name === "voce"));
+  assert.ok(!form.schema.some((campo) => campo.name === "scelte"));
+
+  form.dispatchEvent({ type: "value-changed", detail: { value: { ...form.data, modalita: "voce" } } });
+  editor.setConfig(ricevute.at(-1));
+  form = editor.figli[0];
+  assert.equal(
+    form.schema.find((campo) => campo.name === "voce").selector.config_entry.integration,
+    "scadenze",
+  );
+  assert.ok(!form.schema.some((campo) => campo.name === "scelte"));
 
   form.dispatchEvent({
     type: "value-changed",
-    detail: {
-      value: {
-        type: "custom:scadenze-card",
-        titolo: "",
-        voce: "",
-        nascondi_ok: true,
-        mostra_giorni: true,
-        mostra_km: true,
-        mostra_rinnovato: true,
-      },
-    },
+    detail: { value: { ...form.data, modalita: "scelte", voce: "" } },
   });
+  editor.setConfig(ricevute.at(-1));
+  form = editor.figli[0];
+  const campoScelte = form.schema.find((campo) => campo.name === "scelte");
+  assert.deepEqual(
+    campoScelte.selector.select.options.map((o) => o.value).sort(),
+    ["dev_cie", "dev_rev"],
+  );
+  assert.ok(!form.schema.some((campo) => campo.name === "voce"));
 
-  assert.deepEqual(ricevute, [
-    {
-      type: "custom:scadenze-card",
-      nascondi_ok: true,
-      mostra_giorni: true,
-      mostra_km: true,
-      mostra_rinnovato: true,
-    },
-  ]);
+  form.dispatchEvent({
+    type: "value-changed",
+    detail: { value: { ...form.data, nascondi_ok: true, scelte: [] } },
+  });
+  assert.deepEqual(ricevute.at(-1), {
+    type: "custom:scadenze-card",
+    modalita: "scelte",
+    nascondi_ok: true,
+    mostra_giorni: true,
+    mostra_km: true,
+    mostra_rinnovato: true,
+  });
 });
