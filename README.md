@@ -1,6 +1,6 @@
 # Renewal & Deadline Alert (Home, Car, Health)
 
-[![Validate](https://github.com/iAlias/ScadenzeAutoCasaSalute/actions/workflows/validate.yml/badge.svg)](https://github.com/iAlias/ScadenzeAutoCasaSalute/actions/workflows/validate.yml)
+[![Validate](https://github.com/iAlias/RenewalAndDeadlineAlert/actions/workflows/validate.yml/badge.svg)](https://github.com/iAlias/RenewalAndDeadlineAlert/actions/workflows/validate.yml)
 [![HACS: Custom repository](https://img.shields.io/badge/HACS-Custom-orange.svg)](https://hacs.xyz/docs/faq/custom_repositories/)
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 [![Leggi in italiano](https://img.shields.io/badge/lingua-italiano-009246.svg)](README.it.md)
@@ -46,7 +46,7 @@ Home Assistant **2026.8** or later.
 This integration is not yet in the HACS default store; add it as a custom repository:
 
 1. HACS → Integrations → ⋮ menu → **Custom repositories**
-2. Add `https://github.com/iAlias/ScadenzeAutoCasaSalute` with category **Integration**
+2. Add `https://github.com/iAlias/RenewalAndDeadlineAlert` with category **Integration**
 3. Install it, then restart Home Assistant
 4. **Settings → Devices & services → Add integration → Renewal & Deadline Alert (Home, Car, Health)**
 
@@ -126,7 +126,7 @@ actions:
 
 ## The card
 
-The integration ships with a Lovelace card, already registered — there's no resource to add to your dashboard by hand. It appears in the card picker as **Scadenze** and can be configured through its visual editor.
+The integration ships with a Lovelace card, already registered — there's no resource to add to your dashboard by hand. It appears in the card picker as **Deadlines** and can be configured through its visual editor.
 
 ```yaml
 type: custom:scadenze-card
@@ -174,7 +174,7 @@ Tests under `tests/logica` cover the pure calculation rules and run without Home
 ## Issues and contributions
 
 Found a bug, or a rule that no longer matches the law? Open an issue at
-[github.com/iAlias/ScadenzeAutoCasaSalute/issues](https://github.com/iAlias/ScadenzeAutoCasaSalute/issues).
+[github.com/iAlias/RenewalAndDeadlineAlert/issues](https://github.com/iAlias/RenewalAndDeadlineAlert/issues).
 
 ## License
 

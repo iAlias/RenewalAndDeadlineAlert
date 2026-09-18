@@ -5,7 +5,7 @@ blueprint:
     Nelle azioni puoi usare trigger.event.data.messaggio, trigger.event.data.voce
     e trigger.event.data.scadenza.
   domain: automation
-  source_url: https://github.com/iAlias/ScadenzeAutoCasaSalute/blob/main/blueprints/automation/scadenze/promemoria_scadenze.yaml
+  source_url: https://github.com/iAlias/RenewalAndDeadlineAlert/blob/main/blueprints/automation/scadenze/promemoria_scadenze.yaml
   input:
     voce:
       name: Voce

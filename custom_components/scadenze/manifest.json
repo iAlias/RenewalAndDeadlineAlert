@@ -5,10 +5,10 @@
   "codeowners": ["@iAlias"],
   "config_flow": true,
   "dependencies": ["http"],
-  "documentation": "https://github.com/iAlias/ScadenzeAutoCasaSalute",
+  "documentation": "https://github.com/iAlias/RenewalAndDeadlineAlert",
   "integration_type": "service",
   "iot_class": "calculated",
-  "issue_tracker": "https://github.com/iAlias/ScadenzeAutoCasaSalute/issues",
+  "issue_tracker": "https://github.com/iAlias/RenewalAndDeadlineAlert/issues",
   "requirements": [],
   "version": "0.3.0"
 }
