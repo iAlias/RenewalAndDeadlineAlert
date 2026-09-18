@@ -2,7 +2,7 @@
 
 **Vehicle inspections, road tax, driving licence, boiler maintenance: everyday Italian deadlines tracked inside Home Assistant, calculated from the actual rules and never missed.**
 
-[![Validate](https://github.com/iAlias/ScadenzeAutoCasaSalute/actions/workflows/validate.yml/badge.svg)](https://github.com/iAlias/ScadenzeAutoCasaSalute/actions/workflows/validate.yml)
+[![Validate](https://github.com/iAlias/RenewalAndDeadlineAlert/actions/workflows/validate.yml/badge.svg)](https://github.com/iAlias/RenewalAndDeadlineAlert/actions/workflows/validate.yml)
 [![HACS: Custom repository](https://img.shields.io/badge/HACS-Custom-orange.svg)](https://hacs.xyz/docs/faq/custom_repositories/)
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 
@@ -47,7 +47,7 @@ Home Assistant **2026.8** or later.
 This integration is not yet in the HACS default store; add it as a custom repository:
 
 1. HACS → Integrations → ⋮ menu → **Custom repositories**
-2. Add `https://github.com/iAlias/ScadenzeAutoCasaSalute` with category **Integration**
+2. Add `https://github.com/iAlias/RenewalAndDeadlineAlert` with category **Integration**
 3. Install it, then restart Home Assistant
 4. **Settings → Devices & services → Add integration → Renewal & Deadline Alert (Home, Car, Health)**
 
@@ -175,7 +175,7 @@ Tests under `tests/logica` cover the pure calculation rules and run without Home
 ## Issues and contributions
 
 Found a bug, or a rule that no longer matches the law? Open an issue at
-[github.com/iAlias/ScadenzeAutoCasaSalute/issues](https://github.com/iAlias/ScadenzeAutoCasaSalute/issues).
+[github.com/iAlias/RenewalAndDeadlineAlert/issues](https://github.com/iAlias/RenewalAndDeadlineAlert/issues).
 
 ## License
 
