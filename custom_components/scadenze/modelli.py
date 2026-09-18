@@ -61,6 +61,7 @@ CAMPO_INTERVALLO_MESI: Final = "intervallo_mesi"
 CAMPO_KM_ULTIMO_RINNOVO: Final = "km_ultimo_rinnovo"
 CAMPO_INTERVALLO_KM: Final = "intervallo_km"
 CAMPO_RICORRENZA: Final = "ricorrenza"
+CAMPO_MODELLI: Final = "modelli"
 CAMPI_NOTI: Final = frozenset(
     {
         CAMPO_SCADENZA,
@@ -152,6 +153,11 @@ def _modello(chiave: str) -> Modello:
 def modelli_per_tipo(tipo_voce: str) -> list[str]:
     """Le chiavi dei modelli disponibili per un tipo di voce, nell'ordine del catalogo."""
     return [chiave for chiave, modello in MODELLI.items() if tipo_voce in modello.tipi_voce]
+
+
+def modelli_raccomandati(tipo_voce: str) -> list[str]:
+    """I modelli preselezionati per un tipo di voce: tutti tranne «personalizzata»."""
+    return [chiave for chiave in modelli_per_tipo(tipo_voce) if chiave != M_PERSONALIZZATA]
 
 
 def valori_suggeriti(chiave: str, voce: Voce, oggi: date) -> dict[str, Any]:
