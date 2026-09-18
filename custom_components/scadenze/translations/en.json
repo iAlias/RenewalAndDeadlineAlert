@@ -42,11 +42,39 @@
         "data": {
           "nome": "Name"
         }
+      },
+      "scegli_scadenze": {
+        "title": "Which deadlines?",
+        "description": "Add them now, with suggested values where possible. You can add more later from the item's device page.",
+        "data": {
+          "modelli": "Deadlines to add now"
+        }
+      },
+      "dettagli_scadenza": {
+        "title": "{modello}",
+        "data": {
+          "nome": "Name",
+          "scadenza": "Due date",
+          "mese_scadenza_bollo": "Month the road tax expires",
+          "ultimo_rinnovo": "Last done on",
+          "intervallo_mesi": "Every how many months",
+          "km_ultimo_rinnovo": "Kilometres at the last service",
+          "intervallo_km": "Every how many kilometres",
+          "ricorrenza": "Repeats"
+        },
+        "data_description": {
+          "scadenza": "Suggested dates come from the rules: check them against your documents.",
+          "mese_scadenza_bollo": "The expiry month on the last receipt. Payment is due by the end of the following month.",
+          "intervallo_km": "0 disables the kilometre limit."
+        }
       }
     },
     "error": {
       "campo_obbligatorio": "This field is required.",
-      "data_futura": "The date cannot be in the future."
+      "data_non_valida": "This date is not valid.",
+      "data_futura": "The date cannot be in the future.",
+      "intervallo_non_valido": "The value is out of range.",
+      "scadenza_prima_della_nascita": "The due date is before the date of birth."
     }
   },
   "options": {

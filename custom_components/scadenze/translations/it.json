@@ -42,11 +42,39 @@
         "data": {
           "nome": "Nome"
         }
+      },
+      "scegli_scadenze": {
+        "title": "Quali scadenze?",
+        "description": "Aggiungile ora, con i valori suggeriti dove possibile. Puoi aggiungerne altre più tardi dalla pagina del dispositivo della voce.",
+        "data": {
+          "modelli": "Scadenze da aggiungere ora"
+        }
+      },
+      "dettagli_scadenza": {
+        "title": "{modello}",
+        "data": {
+          "nome": "Nome",
+          "scadenza": "Data di scadenza",
+          "mese_scadenza_bollo": "Mese di scadenza del bollo",
+          "ultimo_rinnovo": "Ultima volta il",
+          "intervallo_mesi": "Ogni quanti mesi",
+          "km_ultimo_rinnovo": "Chilometri all'ultimo tagliando",
+          "intervallo_km": "Ogni quanti chilometri",
+          "ricorrenza": "Si ripete"
+        },
+        "data_description": {
+          "scadenza": "Le date suggerite vengono dalle regole: controllale con i tuoi documenti.",
+          "mese_scadenza_bollo": "Il mese di scadenza sull'ultima ricevuta. Si paga entro la fine del mese successivo.",
+          "intervallo_km": "0 disattiva il limite in chilometri."
+        }
       }
     },
     "error": {
       "campo_obbligatorio": "Questo campo è obbligatorio.",
-      "data_futura": "La data non può essere nel futuro."
+      "data_non_valida": "Questa data non è valida.",
+      "data_futura": "La data non può essere nel futuro.",
+      "intervallo_non_valido": "Il valore è fuori dall'intervallo ammesso.",
+      "scadenza_prima_della_nascita": "La scadenza è precedente alla data di nascita."
     }
   },
   "options": {

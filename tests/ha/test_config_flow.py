@@ -40,9 +40,12 @@ async def test_nuovo_veicolo(hass: HomeAssistant) -> None:
     form = await avvia_voce(hass, "veicolo")
     assert (form["type"], form["step_id"]) == (FlowResultType.FORM, "veicolo")
 
-    risultato = await hass.config_entries.flow.async_configure(
+    scelta = await hass.config_entries.flow.async_configure(
         form["flow_id"], {"nome": "Panda", "tipo_veicolo": "auto", "immatricolazione": "2022-05-18"}
     )
+    assert scelta["step_id"] == "scegli_scadenze"
+
+    risultato = await hass.config_entries.flow.async_configure(scelta["flow_id"], {"modelli": []})
 
     assert risultato["type"] is FlowResultType.CREATE_ENTRY
     assert risultato["title"] == "Panda"
@@ -52,6 +55,7 @@ async def test_nuovo_veicolo(hass: HomeAssistant) -> None:
         "tipo_veicolo": "auto",
         "immatricolazione": "2022-05-01",
     }
+    assert risultato["result"].subentries == {}
 
 
 async def test_immatricolazione_futura(hass: HomeAssistant) -> None:
@@ -64,14 +68,16 @@ async def test_immatricolazione_futura(hass: HomeAssistant) -> None:
 
 async def test_nuova_persona_casa_e_generica(hass: HomeAssistant) -> None:
     form = await avvia_voce(hass, "persona")
-    persona = await hass.config_entries.flow.async_configure(
+    scelta = await hass.config_entries.flow.async_configure(
         form["flow_id"], {"nome": "Mario", "data_nascita": "1990-05-08"}
     )
+    persona = await hass.config_entries.flow.async_configure(scelta["flow_id"], {"modelli": []})
     assert persona["data"] == {"tipo": "persona", "nome": "Mario", "data_nascita": "1990-05-08"}
 
     for tipo, nome in (("casa", "Casa al mare"), ("generica", "Abbonamenti")):
         form = await avvia_voce(hass, tipo)
-        risultato = await hass.config_entries.flow.async_configure(form["flow_id"], {"nome": nome})
+        scelta = await hass.config_entries.flow.async_configure(form["flow_id"], {"nome": nome})
+        risultato = await hass.config_entries.flow.async_configure(scelta["flow_id"], {"modelli": []})
         assert risultato["data"] == {"tipo": tipo, "nome": nome}
 
 
@@ -193,10 +199,103 @@ async def test_riconfigurare_una_scadenza(hass: HomeAssistant) -> None:
 
 async def test_una_voce_generica_offre_solo_la_personalizzata(hass: HomeAssistant) -> None:
     form = await avvia_voce(hass, "generica")
-    creata = await hass.config_entries.flow.async_configure(form["flow_id"], {"nome": "Abbonamenti"})
+    scelta = await hass.config_entries.flow.async_configure(form["flow_id"], {"nome": "Abbonamenti"})
+    assert opzioni_selettore(scelta, "modelli") == ["personalizzata"]
+    creata = await hass.config_entries.flow.async_configure(scelta["flow_id"], {"modelli": []})
     await hass.async_block_till_done()
 
-    scelta = await hass.config_entries.subentries.async_init(
+    scelta_sub = await hass.config_entries.subentries.async_init(
         (creata["result"].entry_id, "scadenza"), context={"source": SOURCE_USER}
     )
-    assert opzioni_selettore(scelta, "modello") == ["personalizzata"]
+    assert opzioni_selettore(scelta_sub, "modello") == ["personalizzata"]
+
+
+async def test_wizard_usa_i_modelli_raccomandati_di_default(hass: HomeAssistant) -> None:
+    form = await avvia_voce(hass, "veicolo")
+    scelta = await hass.config_entries.flow.async_configure(
+        form["flow_id"], {"nome": "Panda", "tipo_veicolo": "auto", "immatricolazione": "2022-05-01"}
+    )
+    assert scelta["step_id"] == "scegli_scadenze"
+
+    # Nessun valore inviato: si applica il default dello schema (tutti tranne "personalizzata"),
+    # quindi il flusso passa alla prima scadenza raccomandata invece di creare subito la entry.
+    primo = await hass.config_entries.flow.async_configure(scelta["flow_id"], {})
+    assert primo["step_id"] == "dettagli_scadenza"
+    assert primo["description_placeholders"] == {"modello": "Revisione"}
+
+
+async def test_wizard_crea_voce_e_scadenze_scelte_insieme(hass: HomeAssistant) -> None:
+    form = await avvia_voce(hass, "veicolo")
+    scelta = await hass.config_entries.flow.async_configure(
+        form["flow_id"], {"nome": "Panda", "tipo_veicolo": "auto", "immatricolazione": "2022-05-18"}
+    )
+    assert opzioni_selettore(scelta, "modelli") == [
+        "revisione", "bollo", "assicurazione", "tagliando", "gomme", "personalizzata",
+    ]
+
+    revisione = await hass.config_entries.flow.async_configure(
+        scelta["flow_id"], {"modelli": ["revisione", "bollo"]}
+    )
+    assert revisione["step_id"] == "dettagli_scadenza"
+    assert revisione["description_placeholders"] == {"modello": "Revisione"}
+    assert suggerito(revisione, "scadenza") == "2028-05-31"
+
+    bollo = await hass.config_entries.flow.async_configure(
+        revisione["flow_id"], {"nome": "Revisione", "scadenza": "2028-05-31"}
+    )
+    assert bollo["step_id"] == "dettagli_scadenza"
+    assert bollo["description_placeholders"] == {"modello": "Bollo"}
+    assert suggerito(bollo, "mese_scadenza_bollo") == "2027-04-01"
+
+    risultato = await hass.config_entries.flow.async_configure(
+        bollo["flow_id"], {"nome": "Bollo", "mese_scadenza_bollo": "2027-04-01"}
+    )
+    await hass.async_block_till_done()
+
+    assert risultato["type"] is FlowResultType.CREATE_ENTRY
+    entry = risultato["result"]
+    assert {sub.title for sub in entry.subentries.values()} == {"Revisione", "Bollo"}
+    assert {sub.data["regola"] for sub in entry.subentries.values()} == {"fine_mese"}
+
+
+async def test_wizard_errore_non_perde_le_scadenze_gia_confermate(hass: HomeAssistant) -> None:
+    form = await avvia_voce(hass, "veicolo")
+    scelta = await hass.config_entries.flow.async_configure(
+        form["flow_id"], {"nome": "Panda", "tipo_veicolo": "auto", "immatricolazione": "2022-05-18"}
+    )
+    revisione = await hass.config_entries.flow.async_configure(
+        scelta["flow_id"], {"modelli": ["revisione", "tagliando"]}
+    )
+    tagliando = await hass.config_entries.flow.async_configure(
+        revisione["flow_id"], {"nome": "Revisione", "scadenza": "2028-05-31"}
+    )
+    assert tagliando["description_placeholders"] == {"modello": "Tagliando"}
+
+    errore = await hass.config_entries.flow.async_configure(
+        tagliando["flow_id"],
+        {
+            "nome": "Tagliando",
+            "ultimo_rinnovo": "2026-09-15",
+            "km_ultimo_rinnovo": 0,
+            "intervallo_mesi": 12,
+            "intervallo_km": 15000,
+        },
+    )
+    assert errore["errors"] == {"ultimo_rinnovo": "data_futura"}
+    assert errore["step_id"] == "dettagli_scadenza"
+    assert errore["description_placeholders"] == {"modello": "Tagliando"}
+
+    risultato = await hass.config_entries.flow.async_configure(
+        errore["flow_id"],
+        {
+            "nome": "Tagliando",
+            "ultimo_rinnovo": "2026-09-01",
+            "km_ultimo_rinnovo": 30000,
+            "intervallo_mesi": 12,
+            "intervallo_km": 15000,
+        },
+    )
+    await hass.async_block_till_done()
+
+    assert risultato["type"] is FlowResultType.CREATE_ENTRY
+    assert {sub.title for sub in risultato["result"].subentries.values()} == {"Revisione", "Tagliando"}

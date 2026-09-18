@@ -13,6 +13,7 @@ from homeassistant.config_entries import (
     ConfigEntry,
     ConfigFlow,
     ConfigFlowResult,
+    ConfigSubentryData,
     ConfigSubentryFlow,
     OptionsFlow,
     SubentryFlowResult,
@@ -50,6 +51,7 @@ from .modelli import (
     CAMPO_INTERVALLO_MESI,
     CAMPO_KM_ULTIMO_RINNOVO,
     CAMPO_MESE_SCADENZA_BOLLO,
+    CAMPO_MODELLI,
     CAMPO_MODELLO,
     CAMPO_NOME,
     CAMPO_RICORRENZA,
@@ -60,6 +62,7 @@ from .modelli import (
     ErroreForm,
     costruisci_scadenza,
     modelli_per_tipo,
+    modelli_raccomandati,
     valori_da_scadenza,
     valori_suggeriti,
 )
@@ -115,9 +118,14 @@ def _schema_opzioni(veicolo: bool) -> vol.Schema:
 
 
 class ScadenzeConfigFlow(ConfigFlow, domain=DOMAIN):
-    """Crea una voce: veicolo, casa, persona o generica."""
+    """Crea una voce: veicolo, casa, persona o generica; poi le sue prime scadenze."""
 
     VERSION = 1
+
+    def __init__(self) -> None:
+        self._dati_voce: dict[str, Any] = {}
+        self._coda_modelli: list[str] = []
+        self._scadenze_raccolte: list[Scadenza] = []
 
     @staticmethod
     @callback
@@ -146,10 +154,10 @@ class ScadenzeConfigFlow(ConfigFlow, domain=DOMAIN):
                 vol.Required(CONF_IMMATRICOLAZIONE): selector.DateSelector(),
             }
         )
-        return self._passo_voce(TIPO_VEICOLO, schema, user_input, CONF_IMMATRICOLAZIONE)
+        return await self._passo_voce(TIPO_VEICOLO, schema, user_input, CONF_IMMATRICOLAZIONE)
 
     async def async_step_casa(self, user_input: dict[str, Any] | None = None) -> ConfigFlowResult:
-        return self._passo_voce(TIPO_CASA, _SCHEMA_SOLO_NOME, user_input)
+        return await self._passo_voce(TIPO_CASA, _SCHEMA_SOLO_NOME, user_input)
 
     async def async_step_persona(self, user_input: dict[str, Any] | None = None) -> ConfigFlowResult:
         schema = vol.Schema(
@@ -158,12 +166,12 @@ class ScadenzeConfigFlow(ConfigFlow, domain=DOMAIN):
                 vol.Required(CONF_DATA_NASCITA): selector.DateSelector(),
             }
         )
-        return self._passo_voce(TIPO_PERSONA, schema, user_input, CONF_DATA_NASCITA)
+        return await self._passo_voce(TIPO_PERSONA, schema, user_input, CONF_DATA_NASCITA)
 
     async def async_step_generica(self, user_input: dict[str, Any] | None = None) -> ConfigFlowResult:
-        return self._passo_voce(TIPO_GENERICA, _SCHEMA_SOLO_NOME, user_input)
+        return await self._passo_voce(TIPO_GENERICA, _SCHEMA_SOLO_NOME, user_input)
 
-    def _passo_voce(
+    async def _passo_voce(
         self,
         tipo: str,
         schema: vol.Schema,
@@ -184,11 +192,82 @@ class ScadenzeConfigFlow(ConfigFlow, domain=DOMAIN):
                     errors[campo_data] = "data_futura"
                 dati[campo_data] = giorno.isoformat()
             if not errors:
-                return self.async_create_entry(title=dati[CONF_NOME], data=dati)
+                self._dati_voce = dati
+                return await self.async_step_scegli_scadenze()
         return self.async_show_form(
             step_id=tipo,
             data_schema=self.add_suggested_values_to_schema(schema, user_input or {}),
             errors=errors,
+        )
+
+    async def async_step_scegli_scadenze(
+        self, user_input: dict[str, Any] | None = None
+    ) -> ConfigFlowResult:
+        tipo = self._dati_voce[CONF_TIPO]
+        if user_input is not None:
+            self._coda_modelli = list(user_input.get(CAMPO_MODELLI, []))
+            self._scadenze_raccolte = []
+            if not self._coda_modelli:
+                return self._crea_entry()
+            return await self.async_step_dettagli_scadenza()
+        schema = vol.Schema(
+            {
+                vol.Optional(
+                    CAMPO_MODELLI, default=modelli_raccomandati(tipo)
+                ): selector.SelectSelector(
+                    selector.SelectSelectorConfig(
+                        options=modelli_per_tipo(tipo),
+                        multiple=True,
+                        translation_key=CAMPO_MODELLO,
+                        mode=selector.SelectSelectorMode.LIST,
+                    )
+                )
+            }
+        )
+        return self.async_show_form(step_id="scegli_scadenze", data_schema=schema)
+
+    async def async_step_dettagli_scadenza(
+        self, user_input: dict[str, Any] | None = None
+    ) -> ConfigFlowResult:
+        chiave = self._coda_modelli[0]
+        voce = Voce.da_dict(self._dati_voce)
+        oggi = dt_util.now().date()
+        errors: dict[str, str] = {}
+
+        if user_input is not None:
+            try:
+                scadenza = costruisci_scadenza(chiave, user_input, voce, oggi)
+            except ErroreForm as err:
+                errors[err.campo] = err.codice
+            else:
+                self._scadenze_raccolte.append(scadenza)
+                self._coda_modelli.pop(0)
+                if self._coda_modelli:
+                    return await self.async_step_dettagli_scadenza()
+                return self._crea_entry()
+            valori: dict[str, Any] = user_input
+        else:
+            valori = valori_suggeriti(chiave, voce, oggi)
+
+        return self.async_show_form(
+            step_id="dettagli_scadenza",
+            data_schema=self.add_suggested_values_to_schema(_schema_dettagli(chiave), valori),
+            errors=errors,
+            description_placeholders={"modello": MODELLI[chiave].etichetta},
+        )
+
+    def _crea_entry(self) -> ConfigFlowResult:
+        subentries = [
+            ConfigSubentryData(
+                subentry_type=SUBENTRY_SCADENZA,
+                title=scadenza.nome,
+                unique_id=None,
+                data=scadenza.a_dict(),
+            )
+            for scadenza in self._scadenze_raccolte
+        ]
+        return self.async_create_entry(
+            title=self._dati_voce[CONF_NOME], data=self._dati_voce, subentries=subentries
         )
 
 
