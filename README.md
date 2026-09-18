@@ -27,7 +27,7 @@ Home Assistant **2026.8** o successivo.
 ## Come si usa
 
 1. **Crea una voce**: un veicolo (con il mese di prima immatricolazione), una casa, una persona (con la data di nascita) o una voce generica.
-2. Sulla scheda della voce premi **Aggiungi scadenza** e scegli il tipo. Il form arriva già compilato: **controlla le date con i tuoi documenti** e salva.
+2. Scegli quali scadenze aggiungere subito (revisione, bollo, assicurazione...): il flusso ti guida una alla volta, con i valori suggeriti già compilati dove possibile. Puoi sempre aggiungerne altre più tardi dalla pagina del dispositivo della voce, con **Aggiungi scadenza**.
 3. Apri **Configura** sulla voce per scegliere il servizio di notifica, i preavvisi, l'orario e, per i veicoli, il sensore del contachilometri.
 
 | Voce | Scadenze |
@@ -92,7 +92,11 @@ Si trova nel selettore delle card come **Scadenze** e si configura anche dall'ed
 ```yaml
 type: custom:scadenze-card
 titolo: Scadenze
-voce: <voce>            # facoltativo: senza, mostra tutte le voci
+modalita: tutte           # tutte (predefinito) | voce | scelte
+voce: <voce>               # con modalita: voce
+scelte:                    # con modalita: scelte
+  - <scadenza 1>
+  - <scadenza 2>
 nascondi_ok: false
 mostra_giorni: true
 mostra_km: true
@@ -102,7 +106,9 @@ mostra_rinnovato: true
 | Opzione | Predefinito | Cosa fa |
 |---|---|---|
 | `titolo` | nessuno | Intestazione della card |
-| `voce` | tutte | Mostra solo le scadenze di una voce |
+| `modalita` | `tutte` | `tutte`, `voce` (una voce sola) o `scelte` (scadenze scelte a mano, di qualunque voce) |
+| `voce` | — | Con `modalita: voce`, quale voce mostrare |
+| `scelte` | — | Con `modalita: scelte`, quali scadenze mostrare |
 | `nascondi_ok` | `false` | Mostra solo le scadenze superate o vicine |
 | `mostra_giorni` | `true` | Aggiunge «tra N giorni» o «scaduta da N giorni» |
 | `mostra_km` | `true` | Aggiunge i km mancanti al tagliando |
