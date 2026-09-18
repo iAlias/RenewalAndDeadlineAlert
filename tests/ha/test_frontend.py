@@ -31,7 +31,7 @@ async def test_modulo_aggiunto_al_frontend_con_la_versione(hass: HomeAssistant) 
     with patch("custom_components.scadenze._aggiungi_modulo_frontend") as aggiungi:
         await configura(hass, crea_voce_veicolo())
 
-    aggiungi.assert_called_once_with(hass, "/scadenze_static/scadenze-card.js?v=0.2.0")
+    aggiungi.assert_called_once_with(hass, "/scadenze_static/scadenze-card.js?v=0.3.0")
 
 
 async def test_senza_frontend_nessun_modulo(hass: HomeAssistant) -> None:
